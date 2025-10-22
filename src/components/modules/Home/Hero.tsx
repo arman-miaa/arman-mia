@@ -7,10 +7,7 @@ export default async function Hero() {
         {/* Crimson Depth */}
         <div
           className="absolute inset-0 z-0"
-          style={{
-            background:
-              "radial-gradient(125% 125% at 50% 100%, #000000 40%, #2b0707 100%)",
-          }}
+      
         />
 
         <section className="relative flex flex-col items-center justify-center text-center py-28 px-6 text-white">

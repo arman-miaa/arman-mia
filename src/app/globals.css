@@ -3,6 +3,33 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+    font-family: "Nunito", sans-serif;
+}
+
+body{
+  background-color: #191f36;
+  color: #fff;
+}
+.navbar a {
+  color: #fff; /* ডিফল্ট রঙ */
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  color: #00bcd4; /* hover হলে যে রঙ দেখাবে */
+}
+
+.navbar a.active {
+  color: #00bcd4; /* active অবস্থায় রঙ */
+  font-weight: bold; /* চাইলে বোল্ডও করতে পারেন */
+}
+
+html {
+  scroll-padding-top: 75px; /* navbar এর উচ্চতার সমান */
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -51,9 +78,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #191f36;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: #59B2F4;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -85,9 +112,9 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: #191f36;
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: #59B2F4;
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
