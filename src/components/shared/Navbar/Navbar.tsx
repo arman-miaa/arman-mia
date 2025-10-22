@@ -17,34 +17,34 @@ export const Navbar = () => {
   const [activeLink, setActiveLink] = useState("#home");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = ["#home", "#about", "#skills", "#projects", "#contact"];
-      let currentSection = "#home";
+ useEffect(() => {
+   const handleScroll = () => {
+     const sections = ["#home", "#about", "#skills", "#projects", "#contact"];
+     let currentSection = "#home"; // ✅ let এখানে
 
-      for (let section of sections) {
-        const element = document.querySelector(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (
-            rect.top <= window.innerHeight / 2 &&
-            rect.bottom >= window.innerHeight / 2
-          ) {
-            currentSection = section;
-            break;
-          }
-        }
-      }
+     for (const section of sections) {
+       const element = document.querySelector(section);
+       if (element) {
+         const rect = element.getBoundingClientRect();
+         if (
+           rect.top <= window.innerHeight / 2 &&
+           rect.bottom >= window.innerHeight / 2
+         ) {
+           currentSection = section;
+           break;
+         }
+       }
+     }
 
-      if (currentSection !== activeLink) {
-        setActiveLink(currentSection);
-        window.history.replaceState(null, "", currentSection);
-      }
-    };
+     if (currentSection !== activeLink) {
+       setActiveLink(currentSection);
+       window.history.replaceState(null, "", currentSection);
+     }
+   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeLink]);
+   window.addEventListener("scroll", handleScroll);
+   return () => window.removeEventListener("scroll", handleScroll);
+ }, [activeLink]);
 
   const handleLinkClick = (link: string) => {
     setActiveLink(link);
