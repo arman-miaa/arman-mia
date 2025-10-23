@@ -107,15 +107,16 @@ export default function Hero() {
               ))}
             </div>
 
+       
             {/* Right Image with Rotating Border */}
-            <div className="md:flex-1   mt-8 md:mt-0">
+            <div className="md:flex-1 mt-8 md:mt-0">
               <div className="relative w-1/2 md:w-full xl:w-10/12 mx-auto md:mr-0 rounded-full p-2 flex justify-center items-center overflow-hidden">
                 {/* Rotating Borders */}
-                <div className="absolute w-200 h-200 rounded-full bg-conic-gradient animate-spin-slow z-0"></div>
-                <div className="animated absolute w-200 h-200 rounded-full bg-conic-gradient animate-spin-slow z-0 animation-delay-2"></div>
+                <div className="absolute w-full h-full rounded-full bg-conic-gradient animate-spin-slow z-0"></div>
+                <div className="absolute w-full h-full rounded-full bg-conic-gradient animate-spin-slow z-0 animation-delay-2000"></div>
 
                 {/* Image */}
-                <div className="relative z-20 w-full h-full">
+                <div className="relative  z-20 w-full h-full bg-primary rounded-full p-2">
                   <Image
                     src="/my-banner.png"
                     alt="Banner Image"

@@ -33,19 +33,45 @@ html {
   scroll-behavior: smooth;
 }
 
-/* ✅ Custom Rotating Gradient */
+
+/* ✅ Custom Rotating Gradient - Symmetrical */
 .bg-conic-gradient {
-  background: conic-gradient(from 0deg, #59B2F4, #191f36, #59B2F4);
+  background: conic-gradient(from 0deg, 
+    /* First Arc (Top-Right/Bottom-Left) */
+    transparent 0%,      /* Start fully transparent */
+    transparent 15%,     /* Keep transparent up to 15% */
+    #59B2F4 50%,         /* Glow center at 25% */
+    transparent 35%,     /* Fade out by 35% */
+    
+    /* Gap/Transition Area (35% to 65%) */
+    transparent 45%,     /* Start gap area (or slightly offset) */
+    transparent 65%,     /* End gap area */
+
+    /* Second Arc (Bottom-Left/Top-Right) */
+    #59B2F4 100%,         /* Glow center at 75% */
+    transparent 85%,     /* Fade out by 85% */
+    transparent 100%     /* Fill the rest with transparent */
+  );
 }
 
+/* The rest of your animation CSS remains the same */
 .animate-spin-slow {
   animation: spin 10s linear infinite;
 }
 
+
 @keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }
+}
+
+.animation-delay-2 {
+    /* For the second border to rotate staggered */
+    animation-delay: -5s; 
 }
 
 .animation-delay-2 {
