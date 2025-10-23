@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -27,8 +29,112 @@ body{
 }
 
 html {
-  scroll-padding-top: 75px; /* navbar এর উচ্চতার সমান */
+  scroll-padding-top: 75px; 
+  scroll-behavior: smooth;
 }
+
+/* ✅ Custom Rotating Gradient */
+/* .bg-conic-gradient {
+  background: conic-gradient(from 0deg, #59B2F4, #191f36, #59B2F4);
+} */
+
+.animate-spin-slow {
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animation-delay-2 {
+  animation-delay: 2s;
+}
+
+.animate{
+  color: transparent;
+  -webkit-text-stroke: .7px #59B2F4;
+} 
+
+:root {
+  --main-color: blue; /* Replace with your desired color */
+}
+
+.animated{
+  animation-delay: -5s;
+}
+
+.custom-i-4 {
+  --i: 4;
+}
+.custom-i-3 {
+  --i: 3;
+}
+.custom-i-2 {
+  --i: 2;
+}
+.custom-i-1 {
+  --i: 1;
+}
+
+
+
+
+
+.homeDetails h2{
+  display: inline-block;
+  /* font-size: 3rem; */
+  /* margin-top: 1rem; */
+}
+.homeDetails h2 > span {
+  position: relative;
+  display: inline-block;
+  color: transparent;
+  -webkit-text-stroke: .07rem #59B2F4;
+  animation: display-text 16s linear infinite;
+  animation-delay: calc(-4s * var(--i));
+}
+
+@keyframes display-text {
+  25%,
+  100% {  
+    display: none;
+  }
+}
+
+.homeDetails h2 span::before{
+  content: attr(data-text);
+  position: absolute;
+  width: 0;
+  border-right: .3rem solid #59B2F4;
+  height: 50px;
+  color: #59B2F4;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: fill-text 4s linear infinite;
+}
+/* Media Query for Smaller Devices */
+@media (max-width: 768px) { /* Adjust 768px to your desired breakpoint */
+  .homeDetails h2 span::before {
+    height: 25px; /* Height for small devices */
+  }
+}
+@media (max-width: 1023px) { /* Adjust 768px to your desired breakpoint */
+  .homeDetails h2 span::before {
+    height: 35px; /* Height for small devices */
+  }
+}
+
+@keyframes fill-text {
+  10%,100%{
+    width: 0;
+  }
+  70%,90%{
+    width: 100%;
+  }
+}
+
 
 @theme inline {
   --color-background: var(--background);
