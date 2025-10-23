@@ -1,55 +1,53 @@
-import Link from "next/link";
+"use client";
+import Animation from "./Animation";
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear();
+const socialLinks = [
+  { href: "https://www.facebook.com/arman2mia", icon: "fa-facebook-f" },
+  { href: "https://www.linkedin.com/in/arman-miaa", icon: "fa-linkedin-in" },
+  { href: "https://github.com/arman-miaa", icon: "fa-github" },
+  { href: "https://discord.com/users/1080759260260089857", icon: "fa-discord" },
+];
 
+const Footer = () => {
   return (
-    <footer className="relative w-full overflow-hidden pt-12 pb-10 ">
-      {/* Background Layer */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(125% 125% at 50% 60%, #000000 40%, #010133 100%)",
-        }}
-      />
-
-      {/* Content Layer */}
-      <div className="relative z-10 container mx-auto px-6 sm:px-8 md:px-12 lg:px-20 xl:px-28 text-white">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-          {/* Left */}
-          <div>
-            <h2 className="text-white text-xl font-semibold mb-1">
-              Next level™
-            </h2>
-            <p className="text-sm text-gray-400">Smart blog System</p>
-          </div>
-
-          {/* Center Nav */}
-          <div className="flex flex-wrap justify-center md:justify-start space-x-6 text-sm">
-            <Link href="/" className="hover:text-white transition-colors">
-              Home
-            </Link>
-            <Link href="/events" className="hover:text-white transition-colors">
-              Events
-            </Link>
-            <Link href="/about" className="hover:text-white transition-colors">
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-white transition-colors"
-            >
-              Contact
-            </Link>
-          </div>
-
-          {/* Right */}
-          <div className="text-sm text-gray-400">
-            © {currentYear} next level team. All rights reserved.
-          </div>
+    <Animation>
+      <footer className="w-full pt-12 mt-12 md:mt-20 text-center bg-primary text-foreground">
+        {/* Profile */}
+        <div className="flex flex-col items-center space-y-2">
+          <img
+            src="/my-banner.png"
+            alt="Arman Mia"
+            className="w-12 h-12 border-2 rounded-full object-cover"
+          />
+          <p className="font-bold text-3xl">Arman Mia</p>
+          <h2>Web Developer</h2>
         </div>
-      </div>
-    </footer>
+
+        {/* Social Icons */}
+        <div className="flex justify-center gap-4 mt-4">
+          {socialLinks.map(({ href, icon }) => (
+            <a
+              key={href}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex justify-center items-center w-10 h-10 rounded-full border-2 border-secondary text-secondary text-[18px] overflow-hidden transition-colors duration-500"
+            >
+              <i
+                className={`relative z-20 group-hover:text-primary transition-colors duration-500 fa-brands ${icon}`}
+              ></i>
+              <span className="absolute top-0 left-0 w-0 h-full bg-[#59B2F4] transition-all duration-500 group-hover:w-full z-10"></span>
+            </a>
+          ))}
+        </div>
+
+        {/* Copyright */}
+        <div className="bg-accent py-4 text-foreground shadow-xl w-full mt-8">
+          <p>© {new Date().getFullYear()} Arman Mia - All rights reserved.</p>
+        </div>
+      </footer>
+    </Animation>
   );
-}
+};
+
+export default Footer;
