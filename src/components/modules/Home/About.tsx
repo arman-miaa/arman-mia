@@ -8,6 +8,7 @@ import {
   SiTailwindcss,
   SiMongodb,
   SiPostgresql,
+  SiExpress,
 } from "react-icons/si";
 import about from "../../../../public/assets/about.json";
 import about2 from "../../../../public/assets/about2.json";
@@ -54,8 +55,9 @@ export const About = () => {
                 {/* Backend */}
                 <SkillBox
                   icon={
-                    <div className="animate-slow-spin">
+                    <div className="flex items-center space-x-3 animate-slow-spin">
                       <FaNodeJs className="text-green-400" />
+                      <SiExpress className="text-gray-200" />
                     </div>
                   }
                   title="Backend"

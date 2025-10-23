@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Animation from "./Animation";
 
 const socialLinks = [
@@ -14,9 +15,10 @@ const Footer = () => {
       <footer className="w-full pt-12 mt-12 md:mt-20 text-center bg-primary text-foreground">
         {/* Profile */}
         <div className="flex flex-col items-center space-y-2">
-          <img
+          <Image
             src="/my-banner.png"
             alt="Arman Mia"
+            width={12} height={12}
             className="w-12 h-12 border-2 rounded-full object-cover"
           />
           <p className="font-bold text-3xl">Arman Mia</p>
