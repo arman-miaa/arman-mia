@@ -78,11 +78,11 @@ const Projects = () => {
                   onError={() => handleImageError(project.title)}
                 />
 
-                <div className="flex flex-col gap-2 mb-4">
-                  <h3 className="text-xl font-semibold text-primary">
+                <div className="flex flex- items-center gap-2 mb-4">
+                  <h3 className="text-xl font-semibold text-secondary">
                     {project.title || "Untitled Project"}
                   </h3>
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm bg-primary py-1 px-2 rounded-2xl text-gray-400">
                     {project.type || "Project"}
                   </span>
                 </div>
@@ -95,7 +95,7 @@ const Projects = () => {
                   {project.techStack?.map((tech, idx) => (
                     <span
                       key={idx}
-                      className="px-4 py-2 bg-secondary rounded-full text-sm font-semibold text-mainText"
+                      className="px-4 py-2 bg-primary rounded-full text-sm font-semibold text-foreground"
                     >
                       {tech}
                     </span>

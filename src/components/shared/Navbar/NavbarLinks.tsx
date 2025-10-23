@@ -35,7 +35,7 @@ export const NavbarLinks = ({
       icon: <GoProjectSymlink className="lg:hidden" />,
     },
     {
-      href: "#blog",
+      href: "#blogs",
       label: "Blogs",
       icon: <FaFileContract className="lg:hidden" />,
     },

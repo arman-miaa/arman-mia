@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaBars } from "react-icons/fa";
 import { NavbarLinks } from "./NavbarLinks";
 import { Sidebar } from "./Sidebar";
+import Link from "next/link";
 
 export const Navbar = () => {
   const [activeLink, setActiveLink] = useState("#home");
@@ -60,9 +61,9 @@ export const Navbar = () => {
     <div className="sticky top-0 left-0 z-50 bg-primary">
       <div className="container mx-auto flex justify-between items-center p-2 px-4 md:py-6">
         {/* Logo */}
-        <a className="btn btn-ghost cursor-pointer text-xl md:text-2xl text-white hover:text-secondary">
-          Portfolio<span className="text-primary -ml-1 text-2xl">.</span>
-        </a>
+        <Link href="/" className="btn btn-ghost cursor-pointer text-xl md:text-2xl text-white hover:text-secondary">
+          Portfolio<span className="text-secondary -ml-1 text-2xl"> .</span>
+        </Link>
 
         {/* Hamburger for Mobile */}
         <button

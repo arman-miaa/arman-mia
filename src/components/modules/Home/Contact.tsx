@@ -66,14 +66,14 @@ const Contact = () => {
               Reach out via email, phone, or social media below:
             </p>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex  flex-col gap-4">
               {contactLinks.map((link, idx) => (
                 <a
                   key={idx}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 w-64 shadow-sm hover:shadow-[#59B2F4] transition-all duration-500 transform hover:scale-105 py-2 px-4 rounded"
+                  className="flex items-center gap-4 w-72 shadow-sm hover:shadow-[#59B2F4] transition-all duration-500 transform hover:scale-105 py-2 px-4 rounded"
                 >
                   {link.icon}
                   <span className="text-gray-400">{link.label}</span>

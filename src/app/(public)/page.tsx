@@ -1,4 +1,5 @@
 import { About } from "@/components/modules/Home/About";
+import Blogs from "@/components/modules/Home/Blogs";
 import Contact from "@/components/modules/Home/Contact";
 import Hero from "@/components/modules/Home/Hero";
 import Projects from "@/components/modules/Home/Projects";
@@ -11,6 +12,7 @@ export default function HomePage() {
       <About />
       <Skills />
       <Projects />
+      <Blogs/>
       <Contact/>
     </div>
   );

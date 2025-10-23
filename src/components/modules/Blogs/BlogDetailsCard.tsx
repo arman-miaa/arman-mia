@@ -1,55 +1,107 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import notFoundImg from "../../../../public/assets/not-found.png";
+import { IoArrowBack } from "react-icons/io5";
+import TitleSection from "@/components/shared/TitleSection";
 import Image from "next/image";
 
-export default async function BlogDetailsCard({ blog }: { blog: any }) {
+interface Blog {
+  id: number;
+  title: string;
+  content: string;
+  thumbnail?: string;
+  createdAt: string;
+}
+
+const BlogDetail = () => {
+  const { blogId } = useParams<{ blogId: string }>();
+  const [blog, setBlog] = useState<Blog | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [imageSrc, setImageSrc] = useState<string>(notFoundImg.src);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API}/blog/${blogId}`
+        );
+        if (!res.ok) throw new Error("Failed to fetch blog details");
+        const data: Blog = await res.json();
+        setBlog(data);
+
+        // ✅ যদি valid thumbnail থাকে, সেটাকে imageSrc এ সেট করো
+        if (data.thumbnail && data.thumbnail.startsWith("http")) {
+          setImageSrc(data.thumbnail);
+        } else {
+          setImageSrc(notFoundImg.src);
+        }
+      } catch (err: unknown) {
+        console.error(err);
+        toast.error(
+          err instanceof Error ? err.message : "Something went wrong"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlog();
+  }, [blogId]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-20 text-gray-400 text-xl">
+        Loading blog...
+      </div>
+    );
+  }
+
   if (!blog) {
     return (
-      <div className="py-20 text-center text-gray-500">Blog not found.</div>
+      <div className="text-center py-20 text-gray-400 text-xl">
+        Blog not found
+      </div>
     );
   }
 
   return (
-    <main className="max-w-4xl mx-auto py-30 px-4">
-      <h1 className="text-5xl font-bold mb-6">{blog?.title}</h1>
+    <section className="container mx-auto py-16 px-4">
+      <TitleSection heading={blog.title} subHeading="Blog Detail" />
+      <button
+        onClick={() => router.back()}
+        className="mb-8 flex items-center gap-2 cursor-pointer bg-transparent border-2 border-[#59B2F4] text-[#59B2F4] font-bold px-6 py-2 rounded-lg hover:bg-[#59B2F4] hover:text-[#191f36] transition-all duration-300"
+      >
+        <IoArrowBack /> Back
+      </button>
 
-      <div className="flex items-center gap-4 mb-8">
+      <div className="bg-accent rounded-lg shadow-lg overflow-hidden">
         <Image
-          src={
-            blog.author.picture ||
-            "https://cdn-icons-png.flaticon.com/512/9385/9385289.png"
-          }
-          alt={blog?.author?.name}
-          width={48}
-          height={48}
-          className="rounded-full"
+          src={imageSrc}
+          alt={blog.title}
+          height={340}
+          width={800}
+          className="w-full h-96 object-cover"
+          unoptimized // 🧠 Next.js image optimizer bypass
+          onError={() => setImageSrc(notFoundImg.src)} // ✅ fallback safely
         />
-        <div>
-          <p className="font-semibold">
-            {blog.author.name}{" "}
-            {blog.author.isVerified && (
-              <span className="inline-block ml-1 text-blue-500">✔</span>
-            )}
+        <div className="p-8">
+          <h1 className="text-4xl font-bold text-mainText mb-4">
+            {blog.title}
+          </h1>
+          <p className="text-gray-500 text-sm mb-6">
+            {new Date(blog.createdAt).toLocaleDateString()}
           </p>
-          <p className="text-gray-500 text-sm">
-            {new Date(blog.createdAt).toLocaleDateString()} • {blog.views} views
+          <p className="text-gray-400 text-lg leading-relaxed">
+            {blog.content}
           </p>
         </div>
       </div>
-
-      {blog.thumbnail && (
-        <div className="relative h-80 w-full overflow-hidden">
-          <Image
-            src={blog.thumbnail}
-            alt={blog.title}
-            fill
-            className="rounded-lg object-cover shadow-md"
-          />
-        </div>
-      )}
-
-      <article className="prose prose-lg max-w-none">
-        <p>{blog.content}</p>
-      </article>
-    </main>
+    </section>
   );
-}
+};
+
+export default BlogDetail;
