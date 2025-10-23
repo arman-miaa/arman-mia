@@ -116,7 +116,7 @@ export default function Hero() {
                 <div className="absolute w-full h-full rounded-full bg-conic-gradient animate-spin-slow z-0 animation-delay-2000"></div>
 
                 {/* Image */}
-                <div className="relative  z-20 w-full h-full bg-primary rounded-full p-2">
+                <div className="relative  z-20 w-full h-full bg-primary rounded-full pt-2">
                   <Image
                     src="/my-banner.png"
                     alt="Banner Image"
