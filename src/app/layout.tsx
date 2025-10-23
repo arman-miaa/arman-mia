@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://arman-mia.vercel.app"),
   title: "Arman | MERN Stack & React | Next Developer | Portfolio",
   description:
     "Portfolio of Arman, a MERN Stack & React developer. Showcasing projects, skills, experience, blogs, and contact information built with Next.js, TypeScript, and Tailwind CSS.",
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
     siteName: "Arman Portfolio",
     images: [
       {
-        url: "/og-image.png", 
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Arman Portfolio",
@@ -59,6 +60,7 @@ export const metadata: Metadata = {
     creator: "@arman_mia",
   },
 };
+
 
 
 export default function RootLayout({
