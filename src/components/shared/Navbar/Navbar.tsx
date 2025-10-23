@@ -8,7 +8,7 @@ import { Sidebar } from "./Sidebar";
 export const Navbar = () => {
   const [activeLink, setActiveLink] = useState("#home");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [user, setUser] = useState(false);
+  const [user] = useState(false);
 
 
 
