@@ -1,9 +1,11 @@
+import ExperienceSection from '@/components/modules/Home/ExperienceSection';
 import React from 'react';
 
 const ExperiencePage = () => {
     return (
       <div>
-        <h1>experience page</h1>
+      
+        <ExperienceSection isDashboard={true} />
       </div>
     );
 };
