@@ -4,68 +4,78 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { Pencil, Trash2 } from "lucide-react";
 import notFoundImg from "../../../../public/assets/not-found.png";
+import EditBlogModal from "../popups/EditBlogModal";
+import { Blog } from "@/types";
 
-interface Blog {
-  id: number;
-  title: string;
-  content: string;
-  thumbnail?: string;
-  createdAt: string;
+
+
+interface BlogCardProps {
+  isDashboard?: boolean;
 }
 
-export const BlogCard = () => {
+export const BlogCard = ({ isDashboard = false }: BlogCardProps) => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editBlog, setEditBlog] = useState<Blog | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog`, {
+          credentials: "include",
+        });
         if (!res.ok) throw new Error("Failed to fetch blogs");
 
         const data: Blog[] = await res.json();
         setBlogs(data);
-      } catch (err: unknown) {
-        console.error(err);
-        if (err instanceof Error) {
-          toast.error(err.message);
-        } else {
-          toast.error("Something went wrong");
-        }
+      } catch {
+        toast.error("Failed to load blogs");
       } finally {
         setLoading(false);
       }
     };
-
     fetchBlogs();
   }, []);
 
-  const goToBlogDetail = (id: number) => {
-    router.push(`/blogs/${id}`);
+  const handleDelete = async (id: number) => {
+    const confirmDelete = window.confirm("Are you sure to delete?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API}/blog/${id}`,
+        { method: "DELETE", credentials: "include" }
+      );
+      if (res.ok) {
+        setBlogs((prev) => prev.filter((b) => b.id !== id));
+        toast.success("Blog deleted successfully");
+      } else toast.error("Failed to delete blog");
+    } catch {
+      toast.error("Error deleting blog");
+    }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <div className="text-center py-20 text-gray-400 text-xl">
         Loading blogs...
       </div>
     );
-  }
 
   return (
-    <section className="container mx-auto py-16 px-4">
-      <h2 className="text-4xl font-bold text-primary mb-8 text-center">
-        All Blogs
+    <section className="p-6 relative">
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+        {isDashboard ? "Manage Blogs" : "All Blogs"}
       </h2>
 
       {blogs.length === 0 ? (
         <p className="text-center text-gray-400">No blogs found</p>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => {
-            // safe thumbnail check
             const thumbnail =
               blog.thumbnail && blog.thumbnail.startsWith("http")
                 ? blog.thumbnail
@@ -74,8 +84,10 @@ export const BlogCard = () => {
             return (
               <div
                 key={blog.id}
-                className="bg-accent rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
-                onClick={() => goToBlogDetail(blog.id)}
+                className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg ${
+                  !isDashboard && "cursor-pointer"
+                }`}
+                onClick={() => !isDashboard && router.push(`/blogs/${blog.id}`)}
               >
                 <Image
                   src={thumbnail}
@@ -85,27 +97,56 @@ export const BlogCard = () => {
                   className="w-full h-48 object-cover"
                   unoptimized
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = notFoundImg.src;
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.src = notFoundImg.src;
                   }}
                 />
 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 text-mainText">
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
                     {blog.title}
                   </h3>
-                  <p className="text-gray-400 mb-4">
-                    {blog.content.length > 120
-                      ? blog.content.slice(0, 120) + "..."
-                      : blog.content}
+                  <p className="text-gray-500 dark:text-gray-400 mb-3 text-sm line-clamp-2">
+                    {blog.content}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs text-gray-400 mb-2">
                     {new Date(blog.createdAt).toLocaleDateString()}
                   </p>
+
+                  {isDashboard && (
+                    <div className="flex justify-between mt-3">
+                      <button
+                        onClick={() => setEditBlog(blog)}
+                        className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+                      >
+                        <Pencil size={16} /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(blog.id)}
+                        className="flex items-center gap-1 text-red-600 hover:text-red-800 text-sm"
+                      >
+                        <Trash2 size={16} /> Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
+      )}
+
+      {/* Edit Modal */}
+      {editBlog && (
+        <EditBlogModal
+          blog={editBlog}
+          onClose={() => setEditBlog(null)}
+          onUpdate={(updatedBlog) =>
+            setBlogs((prev:Blog[]) =>
+              prev.map((b) => (b.id === updatedBlog.id ? updatedBlog : b))
+            )
+          }
+        />
       )}
     </section>
   );

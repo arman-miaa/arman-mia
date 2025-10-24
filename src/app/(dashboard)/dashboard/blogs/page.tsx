@@ -1,11 +1,12 @@
-import React from "react";
+import { BlogCard } from '@/components/modules/Blogs/BlogCard';
+import React from 'react';
 
-const CreateBlog = () => {
+const page = () => {
   return (
     <div>
-      <h1 className="text-center text-xl">Create Blog</h1>
+      <BlogCard isDashboard/>
     </div>
   );
 };
 
-export default CreateBlog;
+export default page;

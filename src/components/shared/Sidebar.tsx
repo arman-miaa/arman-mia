@@ -44,7 +44,7 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`bg-accent text-white md:h-screen md:w-64 flex flex-col justify-between transform transition-transform duration-300 fixed md:static top-0 left-0 z-50 w-64 h-full
+        className={`bg-accent  text-white md:h-screen md:w-64 flex flex-col justify-between transform transition-transform duration-300 fixed md:static top-0 left-0 z-50 w-64 h-full
         ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         {/* Profile Section */}
