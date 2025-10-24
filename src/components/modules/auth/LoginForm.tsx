@@ -24,14 +24,14 @@ const LoginForm = () => {
     try {
       setLoading(true);
 
-      // 🔥 credentials: "include" দিতে হবে
+      
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API}/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
-          credentials: "include", // VERY IMPORTANT 🔥
+          credentials: "include", 
         }
       );
 
@@ -49,7 +49,7 @@ const LoginForm = () => {
       setEmail("");
       setPassword("");
 
-      // ✅ Redirect to Dashboard
+      //  Redirect to Dashboard
       router.push("/dashboard");
     } catch (err) {
       console.error(err);
@@ -98,10 +98,10 @@ const LoginForm = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-10 transform -translate-y-1/2 text-gray-400 hover:text-[#59B2F4]"
+              className="absolute right-3 top-13 transform -translate-y-1/2 text-gray-400 hover:text-[#59B2F4]"
               tabIndex={-1}
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
             </button>
           </div>
 
