@@ -1,9 +1,10 @@
+import SkillsDashboard from '@/components/modules/Home/Skills';
 import React from 'react';
 
 const SkillsPage = () => {
     return (
         <div>
-            <h1>this is skills page</h1>
+          <SkillsDashboard isDashboard  />
         </div>
     );
 };

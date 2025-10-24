@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Animation from "@/components/shared/Animation";
-import TitleSection from "@/components/shared/TitleSection";
+import { toast } from "react-hot-toast";
 import { FaCode, FaServer, FaToolbox } from "react-icons/fa";
 import {
   SiReact,
@@ -23,7 +22,7 @@ import {
   SiNetlify,
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
-
+import EditSkillModal from "../popups/EditSkillModal";
 
 interface Skill {
   id: number;
@@ -32,21 +31,16 @@ interface Skill {
 }
 
 const skillIcons: Record<string, { icon: React.ReactNode; color: string }> = {
-  // Frontend
   "React.js": { icon: <SiReact />, color: "#61DBFB" },
   "Next.js": { icon: <SiNextdotjs />, color: "#FFFFFF" },
   "Tailwind CSS": { icon: <SiTailwindcss />, color: "#06B6D4" },
   TypeScript: { icon: <SiTypescript />, color: "#3178C6" },
   shadcn: { icon: <SiShadcnui />, color: "#FFFFFF" },
-
-  // Backend
   "Node.js": { icon: <SiNodedotjs />, color: "#68A063" },
   "Express.js": { icon: <SiExpress />, color: "#000000" },
   MongoDB: { icon: <SiMongodb />, color: "#47A248" },
   PostgreSQL: { icon: <SiPostgresql />, color: "#336791" },
   Prisma: { icon: <SiPrisma />, color: "#0C344B" },
-
-  // Tools
   Git: { icon: <SiGit />, color: "#F05032" },
   GitHub: { icon: <SiGithub />, color: "#FFFFFF" },
   "VS Code": { icon: <VscVscode />, color: "#007ACC" },
@@ -56,87 +50,138 @@ const skillIcons: Record<string, { icon: React.ReactNode; color: string }> = {
   Netlify: { icon: <SiNetlify />, color: "#00C7B7" },
 };
 
-const Skills = () => {
+interface SkillsDashboardProps {
+  isDashboard?: boolean; // true হলে edit/delete দেখাবে
+}
+
+const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editSkill, setEditSkill] = useState<Skill | null>(null);
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/skill`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/skill`, {
+          credentials: "include",
+        });
         const data = await res.json();
         setSkills(data.skills || []);
       } catch (err) {
-        console.error("Failed to fetch skills:", err);
+        console.error(err);
+        toast.error("Failed to fetch skills");
+      } finally {
+        setLoading(false);
       }
     };
     fetchSkills();
   }, []);
 
-  const groupedSkills = (skills || []).reduce<Record<string, Skill[]>>(
-    (acc, skill) => {
-      if (!acc[skill.category]) acc[skill.category] = [];
-      acc[skill.category].push(skill);
-      return acc;
-    },
-    {}
-  );
+  const handleDelete = async (id: number) => {
+    if (!isDashboard) return; // Home page এ delete disabled
+    if (!window.confirm("Are you sure to delete this skill?")) return;
 
-  const categoryOrder = ["Frontend", "Backend", "Tools"]; // ensure fixed order
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API}/skill/${id}`,
+        { method: "DELETE", credentials: "include" }
+      );
+      if (!res.ok) throw new Error("Failed to delete skill");
+      setSkills((prev) => prev.filter((s) => s.id !== id));
+      toast.success("Skill deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete skill");
+    }
+  };
+
+  const groupedSkills = skills.reduce<Record<string, Skill[]>>((acc, skill) => {
+    if (!acc[skill.category]) acc[skill.category] = [];
+    acc[skill.category].push(skill);
+    return acc;
+  }, {});
+
+  const categoryOrder = ["Frontend", "Backend", "Tools"];
+
+  if (loading)
+    return <p className="text-center py-10 text-gray-500">Loading skills...</p>;
 
   return (
-    <Animation>
-      <section id="skills" className="py-16 pb-24 bg-primary">
-        <div className="container mx-auto px-6 2xl:px-0">
-          <TitleSection heading="My Skills" subHeading="What I Do Best" />
+    <section className="p-6">
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+        {isDashboard ? "Manage Skills" : "My Skills"}
+      </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-            {categoryOrder.map((category) => (
-              <div
-                key={category}
-                className="bg-accent p-8 rounded-2xl shadow-lg hover:shadow-[#59B2F4] transition-all duration-500 transform hover:scale-105 flex flex-col items-center"
-              >
-                {/* Category Icon */}
-                <div className="text-6xl text-[#59B2F4] mb-4">
-                  {category === "Frontend" && <FaCode />}
-                  {category === "Backend" && <FaServer />}
-                  {category === "Tools" && <FaToolbox />}
-                </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categoryOrder.map((category) => (
+          <div
+            key={category}
+            className="bg-accent p-6 rounded-xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex flex-col items-center"
+          >
+            <div className="text-5xl mb-4">
+              {category === "Frontend" && <FaCode />}
+              {category === "Backend" && <FaServer />}
+              {category === "Tools" && <FaToolbox />}
+            </div>
+            <h3 className="text-2xl font-bold mb-4 text-white">{category}</h3>
+            <ul className="flex flex-wrap justify-center gap-4 w-full">
+              {(groupedSkills[category] || []).map((skill) => {
+                const mapped = skillIcons[skill.name] || {
+                  icon: <FaCode />,
+                  color: "#FFFFFF",
+                };
+                return (
+                  <li
+                    key={skill.id}
+                    className="bg-white dark:bg-gray-800 p-3 rounded-lg flex flex-col items-center w-28 text-center shadow"
+                  >
+                    <span
+                      className="text-3xl mb-1"
+                      style={{ color: mapped.color }}
+                    >
+                      {mapped.icon}
+                    </span>
+                    <span className="text-gray-900 dark:text-white font-medium">
+                      {skill.name}
+                    </span>
 
-                <h3 className="text-3xl font-bold text-white mb-6">
-                  {category}
-                </h3>
-
-                <ul className="flex flex-wrap justify-center gap-6">
-                  {(groupedSkills[category] || []).map((skill) => {
-                    const mapped = skillIcons[skill.name] || {
-                      icon: <FaCode />,
-                      color: "#FFFFFF",
-                    };
-                    return (
-                      <li
-                        key={skill.id}
-                        className="flex flex-col items-center justify-center gap-2 text-center"
-                      >
-                        <span
-                          className="text-4xl"
-                          style={{ color: mapped.color }}
+                    {isDashboard && (
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => setEditSkill(skill)}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
                         >
-                          {mapped.icon}
-                        </span>
-                        <span className="text-white font-medium">
-                          {skill.name}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(skill.id)}
+                          className="text-red-600 hover:text-red-800 text-sm font-semibold"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </div>
-      </section>
-    </Animation>
+        ))}
+      </div>
+
+      {isDashboard && editSkill && (
+        <EditSkillModal
+          skill={editSkill}
+          onClose={() => setEditSkill(null)}
+          onUpdate={(updatedSkill) =>
+            setSkills((prev) =>
+              prev.map((s) => (s.id === updatedSkill.id ? updatedSkill : s))
+            )
+          }
+        />
+      )}
+    </section>
   );
 };
 
-export default Skills;
+export default SkillsDashboard;
