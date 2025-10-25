@@ -13,11 +13,11 @@ interface ModalProject extends Omit<Project, "id"> {
 interface ProjectModalProps {
   project: ModalProject | null; // null হলে Create, Object হলে Edit
   onClose: () => void;
-  onSave: (savedProject: Project) => void; // Saved Project-এর id অবশ্যই থাকবে
+  onSave: (savedProject: Project) => void; 
 }
 
 const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
-  // Determine if it's an update operation
+
   const isUpdating = !!project?.id;
 
   const [title, setTitle] = useState(project?.title || "");
@@ -31,7 +31,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
   const [thumbnail, setThumbnail] = useState(project?.thumbnail || "");
   const [loading, setLoading] = useState(false);
 
-  // useEffect to reset state when 'project' prop changes (e.g., from Edit to Create)
+ 
   useEffect(() => {
     setTitle(project?.title || "");
     setType(project?.type || "");
@@ -62,7 +62,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
     try {
       const url = isUpdating
         ? `${process.env.NEXT_PUBLIC_BASE_API}/project/${project!.id}`
-        : `${process.env.NEXT_PUBLIC_BASE_API}/project`; // Create API Endpoint
+        : `${process.env.NEXT_PUBLIC_BASE_API}/project`; 
 
       const method = isUpdating ? "PUT" : "POST";
 
@@ -79,7 +79,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
         );
 
       const data = await res.json();
-      // নিশ্চিত করুন যে API response এ id সহ সম্পূর্ণ Project অবজেক্টটি আছে
+    
       const savedProject: Project = data.project || data.data || data;
 
       onSave(savedProject);
@@ -101,11 +101,13 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
       <div className="bg-accent p-6 rounded-lg w-full max-w-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4 text-gray-900">{modalTitle}</h2>
+        <h2 className="text-xl font-bold mb-4 text-secondary text-center">
+          {modalTitle}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-gray-700 mb-1">Title</label>
+            <label className="block text-foreground mb-1">Title</label>
             <input
               type="text"
               value={title}
@@ -116,7 +118,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
           </div>
           {/* Type */}
           <div>
-            <label className="block text-gray-700 mb-1">Type</label>
+            <label className="block text-foreground mb-1">Type</label>
             <input
               type="text"
               value={type}
@@ -126,7 +128,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
           </div>
           {/* Description */}
           <div>
-            <label className="block text-gray-700 mb-1">Description</label>
+            <label className="block text-foreground mb-1">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -135,7 +137,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
           </div>
           {/* Tech Stack */}
           <div>
-            <label className="block text-gray-700 mb-1">
+            <label className="block text-foreground mb-1">
               Tech Stack (comma separated)
             </label>
             <input
@@ -147,7 +149,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
           </div>
           {/* GitHub URL */}
           <div>
-            <label className="block text-gray-700 mb-1">GitHub URL</label>
+            <label className="block text-foreground mb-1">GitHub URL</label>
             <input
               type="url"
               value={githubUrl}
@@ -157,7 +159,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
           </div>
           {/* Live URL */}
           <div>
-            <label className="block text-gray-700 mb-1">Live URL</label>
+            <label className="block text-foreground mb-1">Live URL</label>
             <input
               type="url"
               value={liveUrl}
@@ -167,7 +169,7 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
           </div>
           {/* Thumbnail */}
           <div>
-            <label className="block text-gray-700 mb-1">Thumbnail URL</label>
+            <label className="block text-foreground mb-1">Thumbnail URL</label>
             <input
               type="url"
               value={thumbnail}
@@ -180,14 +182,14 @@ const ProjectModal = ({ project, onClose, onSave }: ProjectModalProps) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400"
+              className="px-4 py-2 cursor-pointer rounded-md border border-gray-400 hover:bg-gray-800"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              className="px-4 py-2 cursor-pointer rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
               {loading
                 ? isUpdating

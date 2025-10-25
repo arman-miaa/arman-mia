@@ -12,6 +12,7 @@ import Animation from "@/components/shared/Animation";
 
 import MainButton from "@/components/ui/MainButton";
 import ProjectModal from "../popups/EditProjectModal";
+import { showConfirmToast } from "@/components/shared/ConfirmToast";
 
 interface ProjectsProps {
   isDashboard?: boolean;
@@ -21,10 +22,10 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Edit/Create Modal এর জন্য একটি স্টেট ব্যবহার করা হলো
+
   const [modalProject, setModalProject] = useState<Project | null | undefined>(
     undefined
-  ); // undefined -> closed, null -> create, object -> edit
+  );
 
   const [showAll, setShowAll] = useState(false);
 
@@ -47,8 +48,14 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
   }, []);
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure to delete this project?")) return;
-    try {
+   
+    showConfirmToast({
+      message: "Are you sure you want to delete this project?",
+      confirmText: "Yes, Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+      
+         try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API}/project/${id}`,
         {
@@ -62,7 +69,15 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
     } catch {
       toast.error("Failed to delete project");
     }
-  };
+  
+      
+      }
+    })
+
+
+  }
+
+
 
   if (loading)
     return (
@@ -85,12 +100,11 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
             <TitleSection heading="My Projects" subHeading="Current Projects" />
           </div>
 
-          {/* ✅ Create Project Button যোগ করা হলো */}
           {isDashboard && (
             <div className="mb-6 text-right">
               <MainButton
                 text="Create Project"
-                onClick={() => setModalProject(null)} // null মানে Create মোড
+                onClick={() => setModalProject(null)}
               />
             </div>
           )}
@@ -148,17 +162,16 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
                     )}
                   </div>
                   {isDashboard ? (
-                    <div className="flex gap-2 mt-auto justify-center">
+                    <div className="flex gap-2 mt-auto justify-between">
                       <button
-                        // ✅ Edit Modal খোলার জন্য
                         onClick={() => setModalProject(project)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-md hover:bg-blue-700"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(project.id)}
-                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                        className="px-4 py-2 cursor-pointer bg-red-600 text-white rounded-md hover:bg-red-700"
                       >
                         Delete
                       </button>
@@ -171,7 +184,12 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {/* GitHub button code... */}
+                          <button className="relative cursor-pointer inline-flex justify-center items-center w-36 lg:w-40 h-12 lg:h-14 bg-[#59B2F4] border-2 border-[#59B2F4] rounded-lg font-bold text-[#191f36] tracking-widest overflow-hidden group">
+                            <span className="absolute top-0 left-0 w-0 h-full bg-[#191f36] z-10 transition-all duration-500 group-hover:w-full"></span>
+                            <span className="relative z-20 transition-colors duration-500 group-hover:text-[#59B2F4]">
+                              GitHub
+                            </span>
+                          </button>
                         </a>
                       )}
                       {project.liveUrl && (
@@ -180,7 +198,12 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {/* Live Demo button code... */}
+                          <button className="relative cursor-pointer inline-flex justify-center items-center w-36 lg:w-40 h-12 lg:h-14 bg-transparent border-2 border-secondary rounded-lg font-bold text-[#59B2F4] tracking-widest overflow-hidden group">
+                            <span className="absolute top-0 left-0 w-0 h-full bg-[#59B2F4] z-10 transition-all duration-500 group-hover:w-full"></span>
+                            <span className="relative z-20 transition-colors duration-500 group-hover:text-[#191f36]">
+                              Live Demo
+                            </span>
+                          </button>
                         </a>
                       )}
                     </div>
@@ -200,18 +223,16 @@ const Projects = ({ isDashboard = false }: ProjectsProps) => {
           )}
         </div>
 
-        {/* ✅ Project Modal রেন্ডার করা হলো */}
         {modalProject !== undefined && (
           <ProjectModal
             project={modalProject}
             onClose={() => setModalProject(undefined)}
             onSave={(savedProject) => {
               setProjects((prev) => {
-                // 1. পুরোনো ভার্সনটি (যদি থাকে) ID দিয়ে ফিল্টার করে বাদ দিন।
                 const filteredProjects = prev.filter(
                   (p) => p.id !== savedProject.id
                 );
-                // 2. নতুন বা আপডেট হওয়া প্রজেক্টটি শুরুতে যোগ করুন।
+
                 return [savedProject, ...filteredProjects];
               });
             }}

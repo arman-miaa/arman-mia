@@ -66,9 +66,9 @@ const handleDelete = (id?: number) => {
 
         setExperiences((prev) => prev.filter((exp) => exp.id !== id));
         toast.success("Experience deleted successfully");
-      } catch (error: any) {
+      } catch (error) {
         console.error(error);
-        toast.error(error?.message || "Failed to delete experience");
+        toast.error( "Failed to delete experience");
       }
     },
   });
