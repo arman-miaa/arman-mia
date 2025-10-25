@@ -90,7 +90,7 @@ export default function Hero() {
                   href: "https://www.linkedin.com/in/arman-miaa",
                   icon: "fa-linkedin-in",
                 },
-                { href: "https://x.com/arman_miaa", icon: "fa-twitter" },
+                { href: "https://wa.me/8801736550601", icon: "fa-whatsapp" },
               ].map(({ href, icon }) => (
                 <a
                   key={href}
@@ -107,7 +107,6 @@ export default function Hero() {
               ))}
             </div>
 
-       
             {/* Right Image with Rotating Border */}
             <div className="md:flex-1 mt-8 md:mt-0">
               <div className="relative w-1/2 md:w-full xl:w-10/12 mx-auto md:mr-0 rounded-full p-2 flex justify-center items-center overflow-hidden">
