@@ -57,12 +57,12 @@ const EditBlogModal = ({ blog, onClose, onUpdate }: EditBlogModalProps) => {
       <div className="bg-accent dark:bg-gray-900 p-6 rounded-lg shadow-lg w-96 relative">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-black hover:text-gray-600"
+          className="absolute top-3 cursor-pointer right-3 text-red-600 hover:text-red-800"
         >
           <X size={20} />
         </button>
 
-        <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+        <h3 className="text-xl font-semibold mb-4 text-center text-secondary ">
           Edit Blog
         </h3>
 
@@ -91,14 +91,14 @@ const EditBlogModal = ({ blog, onClose, onUpdate }: EditBlogModalProps) => {
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-md border text-gray-600 hover:bg-gray-100"
+              className="px-4 py-2 cursor-pointer text-white rounded-md border  hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={updating}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 cursor-pointer rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
             >
               {updating ? "Updating..." : "Save"}
             </button>

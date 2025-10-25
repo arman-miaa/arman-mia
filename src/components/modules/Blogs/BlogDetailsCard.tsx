@@ -33,7 +33,7 @@ const BlogDetail = () => {
         const data: Blog = await res.json();
         setBlog(data);
 
-        // ✅ যদি valid thumbnail থাকে, সেটাকে imageSrc এ সেট করো
+    
         if (data.thumbnail && data.thumbnail.startsWith("http")) {
           setImageSrc(data.thumbnail);
         } else {
@@ -85,8 +85,8 @@ const BlogDetail = () => {
           height={340}
           width={800}
           className="w-full h-96 object-cover"
-          unoptimized // 🧠 Next.js image optimizer bypass
-          onError={() => setImageSrc(notFoundImg.src)} // ✅ fallback safely
+          unoptimized 
+          onError={() => setImageSrc(notFoundImg.src)} 
         />
         <div className="p-8">
           <h1 className="text-4xl font-bold text-mainText mb-4">

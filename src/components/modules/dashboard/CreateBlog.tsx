@@ -9,7 +9,7 @@ const CreateBlog = () => {
   const [content, setContent] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); // router import
+  const router = useRouter(); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ const CreateBlog = () => {
       setContent("");
       setThumbnailUrl("");
 
-      router.push("/dashboard/blogs"); // submit হলে redirect
+      router.push("/dashboard/blogs"); 
     } catch (err: unknown) {
       console.error(err);
       toast.error("Something went wrong");
@@ -51,13 +51,13 @@ const CreateBlog = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-accent dark:bg-gray-800 rounded-md shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+      <h1 className="text-2xl font-bold mb-6 text-secondary text-center">
         Create New Blog
       </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <div>
-          <label className="block text-gray-700 dark:text-gray-200 mb-1">
+          <label className="block text-foreground mb-1">
             Title
           </label>
           <input
@@ -72,7 +72,7 @@ const CreateBlog = () => {
 
         {/* Content */}
         <div>
-          <label className="block text-gray-700 dark:text-gray-200 mb-1">
+          <label className="block text-foreground mb-1">
             Content
           </label>
           <textarea
@@ -87,7 +87,7 @@ const CreateBlog = () => {
 
         {/* Thumbnail URL */}
         <div>
-          <label className="block text-gray-700 dark:text-gray-200 mb-1">
+          <label className="block text-foreground mb-1">
             Thumbnail URL
           </label>
           <input
@@ -103,7 +103,7 @@ const CreateBlog = () => {
         <button
           type="submit"
           disabled={loading}
-          className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+          className="bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
         >
           {loading ? "Creating..." : "Create Blog"}
         </button>
