@@ -1,99 +1,123 @@
+// src/popups/EditExperienceModel.tsx (বা আপনার ফাইলের নাম)
+
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+// ✅ ধরে নেওয়া হচ্ছে Experience ইন্টারফেসটি "@/types" থেকে আসছে
+import { Experience } from "@/types";
 
-interface Experience {
-  id: number;
-  title: string;
-  company: string;
-  position: string;
-  startDate: string | null;
-  endDate: string | null;
-  isCurrent: boolean;
-  description: string;
-  certificateImg: string;
-  technologies: string[];
-  location: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface EditExperienceModalProps {
-  experience: Experience;
+interface ExperienceModalProps {
+  experience: Experience | null; // null হলে Create, Object হলে Edit
   onClose: () => void;
-  onUpdate: (updatedExperience: Experience) => void;
+  onSave: (savedExperience: Experience) => void;
 }
 
-const EditExperienceModal = ({
+const ExperienceModal = ({
   experience,
   onClose,
-  onUpdate,
-}: EditExperienceModalProps) => {
-  const [title, setTitle] = useState(experience.title || "");
-  const [company, setCompany] = useState(experience.company || "");
-  const [position, setPosition] = useState(experience.position || "");
+  onSave,
+}: ExperienceModalProps) => {
+  // ✅ isUpdating ভ্যারিয়েবলটি ফাংশন স্কোপে ডিফাইন করা হলো
+  const isUpdating = !!experience?.id;
+
+  const [title, setTitle] = useState(experience?.title || "");
+  const [company, setCompany] = useState(experience?.company || "");
+  const [position, setPosition] = useState(experience?.position || "");
   const [startDate, setStartDate] = useState(
-    experience.startDate ? experience.startDate.slice(0, 10) : ""
+    experience?.startDate ? experience.startDate.slice(0, 10) : ""
   );
   const [endDate, setEndDate] = useState(
-    experience.endDate ? experience.endDate.slice(0, 10) : ""
+    experience?.endDate ? experience.endDate.slice(0, 10) : ""
   );
-  const [isCurrent, setIsCurrent] = useState(experience.isCurrent || false);
-  const [description, setDescription] = useState(experience.description || "");
+  const [isCurrent, setIsCurrent] = useState(experience?.isCurrent || false);
+  const [description, setDescription] = useState(experience?.description || "");
   const [technologies, setTechnologies] = useState(
-    experience.technologies?.join(", ") || ""
+    experience?.technologies?.join(", ") || ""
   );
-  const [location, setLocation] = useState(experience.location || "");
+  const [location, setLocation] = useState(experience?.location || "");
   const [loading, setLoading] = useState(false);
 
- const handleSubmit = async (e: React.FormEvent) => {
-   e.preventDefault();
-   setLoading(true);
+  // Modal context পরিবর্তন হলে স্টেট রিসেট করা
+  useEffect(() => {
+    setTitle(experience?.title || "");
+    setCompany(experience?.company || "");
+    setPosition(experience?.position || "");
+    setStartDate(
+      experience?.startDate ? experience.startDate.slice(0, 10) : ""
+    );
+    setEndDate(experience?.endDate ? experience.endDate.slice(0, 10) : "");
+    setIsCurrent(experience?.isCurrent || false);
+    setDescription(experience?.description || "");
+    setTechnologies(experience?.technologies?.join(", ") || "");
+    setLocation(experience?.location || "");
+  }, [experience]);
 
-   try {
-     const res = await fetch(
-       `${process.env.NEXT_PUBLIC_BASE_API}/experience/${experience.id}`,
-       {
-         method: "PUT",
-         headers: { "Content-Type": "application/json" },
-         credentials: "include",
-         body: JSON.stringify({
-           title,
-           company,
-           position,
-           startDate: startDate ? new Date(startDate).toISOString() : null,
-           endDate: endDate ? new Date(endDate).toISOString() : null,
-           isCurrent,
-           description,
-           technologies: technologies.split(",").map((t) => t.trim()),
-           location,
-         }),
-       }
-     );
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-     if (!res.ok) throw new Error("Failed to update experience");
+    const payload = {
+      title,
+      company,
+      position,
+      startDate: startDate ? new Date(startDate).toISOString() : null,
+      endDate: isCurrent
+        ? null
+        : endDate
+        ? new Date(endDate).toISOString()
+        : null,
+      isCurrent,
+      description,
+      // কমা সেপারেটেড স্ট্রিংকে অ্যারেতে পরিবর্তন করা
+      technologies: technologies
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t),
+      location,
+    };
 
-     const data = await res.json();
-     const updatedExp = data.data || data;
-     onUpdate(updatedExp);
-     toast.success("Experience updated successfully");
-     onClose();
-   } catch (err) {
-     console.error(err);
-     toast.error("Failed to update experience");
-   } finally {
-     setLoading(false);
-   }
- };
+    try {
+      const url = isUpdating
+        ? `${process.env.NEXT_PUBLIC_BASE_API}/experience/${experience!.id}`
+        : `${process.env.NEXT_PUBLIC_BASE_API}/experience`;
 
+      const res = await fetch(url, {
+        method: isUpdating ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok)
+        throw new Error(
+          `Failed to ${isUpdating ? "update" : "create"} experience`
+        );
+
+      const data = await res.json();
+      // API রেসপন্স থেকে সঠিক অবজেক্ট বের করা
+      const savedExp: Experience = data.data || data.experience || data;
+
+      onSave(savedExp);
+      toast.success(
+        `Experience ${isUpdating ? "updated" : "created"} successfully`
+      );
+      onClose();
+    } catch (err) {
+      console.error(err);
+      toast.error(`Failed to ${isUpdating ? "update" : "create"} experience`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const modalTitle = isUpdating ? "Edit Experience" : "Create New Experience";
+  const buttonText = isUpdating ? "Update" : "Create";
 
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
       <div className="bg-accent p-6 rounded-lg w-full max-w-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4 text-gray-900">
-          Edit Experience
-        </h2>
+        <h2 className="text-xl font-bold mb-4 text-gray-900">{modalTitle}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -136,6 +160,7 @@ const EditExperienceModal = ({
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full p-2 border rounded-md border-gray-300"
+                required
               />
             </div>
 
@@ -205,7 +230,11 @@ const EditExperienceModal = ({
               disabled={loading}
               className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
-              {loading ? "Updating..." : "Update"}
+              {loading
+                ? isUpdating
+                  ? "Updating..."
+                  : "Creating..."
+                : buttonText}
             </button>
           </div>
         </form>
@@ -214,4 +243,4 @@ const EditExperienceModal = ({
   );
 };
 
-export default EditExperienceModal;
+export default ExperienceModal;

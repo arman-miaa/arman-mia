@@ -19,18 +19,20 @@ export interface Project {
   thumbnail?: string;
 }
 
+// src/types/interfaces.ts
+
 export interface Experience {
-  id: number;
+  id?: number; 
   title: string;
   company: string;
   position: string;
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
   isCurrent: boolean;
   description: string;
-  certificateImg: string;
+  certificateImg?: string;
   technologies: string[];
   location: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
