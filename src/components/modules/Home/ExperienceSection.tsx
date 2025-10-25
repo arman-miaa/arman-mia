@@ -89,7 +89,7 @@ const handleDelete = (id?: number) => {
   const shouldShowToggleButton = !isDashboard && experiences.length > 3;
 
   return (
-    <section className=" container mx-auto p-6 py-12 md:py-16">
+    <section id="experiences" className=" container mx-auto p-6 py-12 md:py-16">
       <TitleSection heading="My Experiences" subHeading="Where I’ve worked" />
 
       {isDashboard && (

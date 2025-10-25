@@ -20,7 +20,7 @@ export const Sidebar = ({
 }: SidebarProps) => {
   return (
     <div
-      className={`fixed top-0 left-0 h-full w-60 bg-primary text-white z-50 transform ${
+      className={`fixed top-0 left-0 h-full w-60 lg:hidden bg-primary text-white z-50 transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300`}
     >
@@ -35,13 +35,16 @@ export const Sidebar = ({
           <FaTimes />
         </button>
       </div>
-      <ul className="menu p-4">
+      <ul className="menu space-y-3 p-4">
         <NavbarLinks
           activeLink={activeLink}
           handleLinkClick={handleLinkClick}
           user={user}
         />
       </ul>
+      <div className="absolute bottom-4 left-0 w-full px-5 text-gray-400 border-t border-white/10 pt-3">
+        <p>© {new Date().getFullYear()} Portfolio</p>
+      </div>
     </div>
   );
 };

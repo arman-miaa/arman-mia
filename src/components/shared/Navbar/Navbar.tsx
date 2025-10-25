@@ -6,19 +6,52 @@ import { NavbarLinks } from "./NavbarLinks";
 import { Sidebar } from "./Sidebar";
 import Link from "next/link";
 
+
 export const Navbar = () => {
   const [activeLink, setActiveLink] = useState("#home");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [user] = useState(false);
+ 
+  const [user, setUser] = useState(false);
 
 
+  useEffect(() => {
+  
+    const checkAuthStatus = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API}/auth/me`, 
+          {
+            credentials: "include", 
+          }
+        );
 
+        if (res.ok) {
+     
+          setUser(true);
+      
+        } else {
+  
+          setUser(false);
+        }
+      } catch (error) {
+ 
+        console.error("Authentication check failed:", error);
+      
+        setUser(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []); 
+
+ 
   useEffect(() => {
     const handleScroll = () => {
       const sections = [
         "#home",
         "#about",
         "#skills",
+        "#experiences",
         "#projects",
         "#blogs",
         "#contact",
@@ -61,7 +94,10 @@ export const Navbar = () => {
     <div className="sticky top-0 left-0 z-50 bg-primary">
       <div className="container mx-auto flex justify-between items-center p-2 px-4 md:py-6">
         {/* Logo */}
-        <Link href="/" className="btn btn-ghost cursor-pointer text-xl md:text-2xl text-white hover:text-secondary">
+        <Link
+          href="/"
+          className="btn btn-ghost cursor-pointer text-xl md:text-2xl text-white hover:text-secondary"
+        >
           Portfolio<span className="text-secondary -ml-1 text-2xl"> .</span>
         </Link>
 
@@ -79,7 +115,7 @@ export const Navbar = () => {
             <NavbarLinks
               activeLink={activeLink}
               handleLinkClick={handleLinkClick}
-              user={user}
+              user={user} 
             />
           </ul>
         </div>
@@ -91,7 +127,7 @@ export const Navbar = () => {
         toggleSidebar={toggleSidebar}
         activeLink={activeLink}
         handleLinkClick={handleLinkClick}
-        user={user}
+        user={user} 
       />
     </div>
   );

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
   const router = useRouter();
-console.log(process.env.NEXT_PUBLIC_BASE_API);
+
   const handleLogout = async () => {
     try {
       const res = await fetch(

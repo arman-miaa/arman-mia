@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
   console.log(token);
 
   
-  if (!token && req.nextUrl.pathname.startsWith("/off")) {
+  if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
     const loginUrl = new URL("/login", req.url);
     return NextResponse.redirect(loginUrl);
   }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FaFileContract, FaHome, FaInfoCircle } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
+import { ImBlogger } from "react-icons/im";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { SiHyperskill } from "react-icons/si";
 
@@ -30,6 +31,11 @@ export const NavbarLinks = ({
       icon: <SiHyperskill className="lg:hidden" />,
     },
     {
+      href: "#experiences",
+      label: "Experiences",
+      icon: <SiHyperskill className="lg:hidden" />,
+    },
+    {
       href: "#projects",
       label: "Projects",
       icon: <GoProjectSymlink className="lg:hidden" />,
@@ -37,7 +43,7 @@ export const NavbarLinks = ({
     {
       href: "#blogs",
       label: "Blogs",
-      icon: <FaFileContract className="lg:hidden" />,
+      icon: <ImBlogger className="lg:hidden" />,
     },
     {
       href: "#contact",

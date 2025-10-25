@@ -125,7 +125,7 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
     return <p className="text-center py-10 text-gray-500">Loading skills...</p>;
 
   return (
-    <section className="container mx-auto p-6">
+    <section id="skills" className="container mx-auto p-6">
       <TitleSection heading="My Skills" subHeading="What I Do Best" />
       <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
         {isDashboard ? "Manage Skills" : "My Skills"}
