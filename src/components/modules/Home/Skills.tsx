@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { FaCode, FaServer, FaToolbox } from "react-icons/fa";
 import {
@@ -22,12 +22,14 @@ import {
   SiNetlify,
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
-import EditSkillModal from "../popups/EditSkillModal";
+
+import MainButton from "@/components/ui/MainButton";
+import SkillModal from "../popups/EditSkillModal"; 
 
 interface Skill {
-  id: number;
-  category: string;
+  id?: number;
   name: string;
+  category: string;
 }
 
 const skillIcons: Record<string, { icon: React.ReactNode; color: string }> = {
@@ -51,13 +53,15 @@ const skillIcons: Record<string, { icon: React.ReactNode; color: string }> = {
 };
 
 interface SkillsDashboardProps {
-  isDashboard?: boolean; // true হলে edit/delete দেখাবে
+  isDashboard?: boolean;
 }
 
 const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editSkill, setEditSkill] = useState<Skill | null>(null);
+  const [modalSkill, setModalSkill] = useState<Skill | null | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -78,7 +82,7 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
   }, []);
 
   const handleDelete = async (id: number) => {
-    if (!isDashboard) return; // Home page এ delete disabled
+    if (!isDashboard) return;
     if (!window.confirm("Are you sure to delete this skill?")) return;
 
     try {
@@ -95,11 +99,13 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
     }
   };
 
-  const groupedSkills = skills.reduce<Record<string, Skill[]>>((acc, skill) => {
-    if (!acc[skill.category]) acc[skill.category] = [];
-    acc[skill.category].push(skill);
-    return acc;
-  }, {});
+  const groupedSkills = useMemo(() => {
+    return skills.reduce<Record<string, Skill[]>>((acc, skill) => {
+      if (!acc[skill.category]) acc[skill.category] = [];
+      acc[skill.category].push(skill);
+      return acc;
+    }, {});
+  }, [skills]);
 
   const categoryOrder = ["Frontend", "Backend", "Tools"];
 
@@ -111,6 +117,12 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
       <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
         {isDashboard ? "Manage Skills" : "My Skills"}
       </h2>
+
+      {isDashboard && (
+        <div className="mb-6 text-right">
+          <MainButton text="Create Skill" onClick={() => setModalSkill(null)} />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {categoryOrder.map((category) => (
@@ -132,7 +144,12 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
                 };
                 return (
                   <li
-                    key={skill.id}
+                    // ✅ Key লজিক: নিশ্চিত করে যে ক্রিয়েট বা এডিটের সময় রিরেন্ডার হবে
+                    key={
+                      skill.id
+                        ? `skill-${skill.id}`
+                        : `new-${skill.name}-${Date.now()}`
+                    }
                     className="bg-white dark:bg-gray-800 p-3 rounded-lg flex flex-col items-center w-28 text-center shadow"
                   >
                     <span
@@ -148,13 +165,13 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
                     {isDashboard && (
                       <div className="flex gap-2 mt-2">
                         <button
-                          onClick={() => setEditSkill(skill)}
+                          onClick={() => setModalSkill(skill)}
                           className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(skill.id)}
+                          onClick={() => handleDelete(skill.id!)}
                           className="text-red-600 hover:text-red-800 text-sm font-semibold"
                         >
                           Delete
@@ -169,15 +186,20 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
         ))}
       </div>
 
-      {isDashboard && editSkill && (
-        <EditSkillModal
-          skill={editSkill}
-          onClose={() => setEditSkill(null)}
-          onUpdate={(updatedSkill) =>
-            setSkills((prev) =>
-              prev.map((s) => (s.id === updatedSkill.id ? updatedSkill : s))
-            )
-          }
+      {modalSkill !== undefined && (
+        <SkillModal
+          skill={modalSkill}
+          onClose={() => setModalSkill(undefined)}
+        
+          onSave={(savedSkill) => {
+            setSkills((prev) => {
+           
+              const filteredSkills = prev.filter((s) => s.id !== savedSkill.id);
+
+            
+              return [savedSkill, ...filteredSkills];
+            });
+          }}
         />
       )}
     </section>

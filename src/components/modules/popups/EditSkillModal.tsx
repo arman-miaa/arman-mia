@@ -1,24 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 interface Skill {
-  id: number;
-  category: string;
+  id?: number;
   name: string;
+  category: string;
 }
 
-interface EditSkillModalProps {
-  skill: Skill;
+interface SkillModalProps {
+  skill?: Skill | null; // null → create, object → edit
   onClose: () => void;
-  onUpdate: (updatedSkill: Skill) => void;
+  onSave: (savedSkill: Skill) => void;
 }
 
-const EditSkillModal = ({ skill, onClose, onUpdate }: EditSkillModalProps) => {
-  const [name, setName] = useState(skill.name);
-  const [category, setCategory] = useState(skill.category);
+const SkillModal: React.FC<SkillModalProps> = ({ skill, onClose, onSave }) => {
+  const [name, setName] = useState(skill?.name || "");
+  const [category, setCategory] = useState(skill?.category || "Frontend");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+   
+    setName(skill?.name || "");
+    setCategory(skill?.category || "Frontend");
+  }, [skill]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,41 +35,48 @@ const EditSkillModal = ({ skill, onClose, onUpdate }: EditSkillModalProps) => {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API}/skill/${skill.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, category }),
-          credentials: "include",
-        }
-      );
+      const isUpdating = !!skill?.id;
+      const url = isUpdating
+        ? `${process.env.NEXT_PUBLIC_BASE_API}/skill/${skill.id}`
+        : `${process.env.NEXT_PUBLIC_BASE_API}/skill`;
 
-      if (!res.ok) throw new Error("Failed to update skill");
+      const res = await fetch(url, {
+        method: isUpdating ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, category }),
+      });
 
-      const updatedSkill = await res.json();
-      onUpdate(updatedSkill);
-      toast.success("Skill updated successfully");
-      onClose();
+      if (!res.ok)
+        throw new Error(`Failed to ${isUpdating ? "update" : "create"} skill`);
+
+      // API response থেকে ডেটা বের করে আনা (আপনার API response format অনুযায়ী)
+      const resData = await res.json();
+      // নিশ্চিত করুন যে API response এর মধ্যে `skill` কি-তে সঠিক অবজেক্টটি আছে
+      const savedSkill: Skill = resData.skill || resData;
+
+      // onSave কে কল করা, যা parent component-এর স্টেট আপডেট করবে
+      onSave(savedSkill);
+      toast.success(isUpdating ? "Skill updated!" : "Skill created!");
+      onClose(); // Modal বন্ধ করা
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update skill");
+      toast.error("Something went wrong!");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/30  flex justify-center items-center z-50">
-      <div className="bg-accent  p-6 rounded-lg w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-          Edit Skill
+    <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
+      <div className="bg-accent p-6 rounded-lg w-full max-w-md shadow-lg">
+        <h2 className="text-xl font-bold mb-4">
+          {skill?.id ? "Edit Skill" : "Create Skill"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
           <div>
-            <label className="block text-gray-700 dark:text-gray-200 mb-1">
+            <label className="block text-gray-700 dark:text-white mb-1">
               Skill Name
             </label>
             <input
@@ -75,15 +88,14 @@ const EditSkillModal = ({ skill, onClose, onUpdate }: EditSkillModalProps) => {
             />
           </div>
 
-          {/* Category */}
-          <div className="">
-            <label className="block text-foreground  mb-1">
+          <div>
+            <label className="block text-gray-700 dark:text-white mb-1">
               Category
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-2 border rounded-md bg-accent "
+              className="w-full p-2 border rounded-md bg-accent"
               required
             >
               <option value="Frontend">Frontend</option>
@@ -92,12 +104,11 @@ const EditSkillModal = ({ skill, onClose, onUpdate }: EditSkillModalProps) => {
             </select>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400 "
+              className="px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400"
             >
               Cancel
             </button>
@@ -106,7 +117,13 @@ const EditSkillModal = ({ skill, onClose, onUpdate }: EditSkillModalProps) => {
               disabled={loading}
               className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
-              {loading ? "Updating..." : "Update"}
+              {loading
+                ? skill?.id
+                  ? "Updating..."
+                  : "Creating..."
+                : skill?.id
+                ? "Update"
+                : "Create"}
             </button>
           </div>
         </form>
@@ -115,4 +132,4 @@ const EditSkillModal = ({ skill, onClose, onUpdate }: EditSkillModalProps) => {
   );
 };
 
-export default EditSkillModal;
+export default SkillModal;
