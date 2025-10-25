@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import TitleSection from "@/components/shared/TitleSection";
 import notFoundImg from "../../../../public/assets/not-found.png";
+import MainButton from "@/components/ui/MainButton";
 
 interface Blog {
   id: number;
@@ -105,12 +106,9 @@ const Blogs = () => {
       )}
 
       <div className="text-center mt-12">
-        <button
-          onClick={goToAllBlogs}
-          className="inline-block cursor-pointer bg-transparent border-2 border-[#59B2F4] text-[#59B2F4] font-bold px-8 py-3 rounded-lg hover:bg-[#59B2F4] hover:text-[#191f36] transition-all duration-300"
-        >
-          View All Blogs
-        </button>
+        <div className="text-center mt-12">
+          <MainButton text="View All Blogs" onClick={goToAllBlogs} />
+        </div>
       </div>
     </section>
   );

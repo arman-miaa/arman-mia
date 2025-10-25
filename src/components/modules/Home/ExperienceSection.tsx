@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import EditExperienceModal from "../popups/EditExperienceModel";
 import TitleSection from "@/components/shared/TitleSection";
+import MainButton from "@/components/ui/MainButton";
 
 interface Experience {
   id: number;
@@ -30,6 +31,7 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [editExperience, setEditExperience] = useState<Experience | null>(null);
+  const [showAll, setShowAll] = useState(false); // 🟢 নতুন state
   const router = useRouter();
 
   useEffect(() => {
@@ -37,7 +39,9 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API}/experience`,
-          { credentials: "include" }
+          {
+            credentials: "include",
+          }
         );
         const data = await res.json();
         setExperiences(data.data || []);
@@ -57,7 +61,10 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API}/experience/${id}`,
-        { method: "DELETE", credentials: "include" }
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
       );
       if (!res.ok) throw new Error("Failed to delete experience");
       setExperiences((prev) => prev.filter((exp) => exp.id !== id));
@@ -73,8 +80,10 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
       <p className="text-center py-10 text-gray-500">Loading experiences...</p>
     );
 
-  // Homepage এ max 3 card দেখানো
+  // 🟢 showAll true হলে সব দেখাবে, false হলে প্রথম ৩টা
   const displayExperiences = isDashboard
+    ? experiences
+    : showAll
     ? experiences
     : experiences.slice(0, 3);
 
@@ -130,14 +139,13 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
         })}
       </div>
 
+      {/* 🟢 Toggle Button */}
       {!isDashboard && experiences.length > 3 && (
         <div className="text-center mt-6">
-          <button
-            onClick={() => router.push("/dashboard/experience")}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            See More
-          </button>
+          <MainButton
+            text={showAll ? "Hide More" : "See More"}
+            onClick={() => setShowAll(!showAll)}
+          />
         </div>
       )}
 
