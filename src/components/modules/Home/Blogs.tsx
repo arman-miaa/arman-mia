@@ -17,7 +17,8 @@ interface Blog {
 }
 
 const Blogs = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+
+  const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -28,7 +29,8 @@ const Blogs = () => {
         if (!res.ok) throw new Error("Failed to fetch blogs");
         const data: Blog[] = await res.json();
 
-        setBlogs(data.slice(0, 3));
+      
+        setAllBlogs(data || []);
       } catch (err: unknown) {
         console.error(err);
         if (err instanceof Error) {
@@ -43,6 +45,12 @@ const Blogs = () => {
 
     fetchBlogs();
   }, []);
+
+
+  const displayBlogs = allBlogs.slice(0, 3);
+
+ 
+  const shouldShowButton = allBlogs.length > 3;
 
   const goToBlogDetail = (id: number) => {
     router.push(`/blogs/${id}`);
@@ -64,17 +72,17 @@ const Blogs = () => {
     <section id="blogs" className="container mx-auto py-16 px-4">
       <TitleSection heading="Latest Blogs" subHeading="Our Blogs" />
 
-      {blogs.length === 0 ? (
+      {displayBlogs.length === 0 ? (
         <p className="text-center text-gray-400">No blogs found</p>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs.map((blog) => (
+       
+          {displayBlogs.map((blog) => (
             <div
               key={blog.id}
               className="bg-accent rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
               onClick={() => goToBlogDetail(blog.id)}
             >
-              {/* ✅ Safe Fallback for Image */}
               <Image
                 src={
                   blog.thumbnail && blog.thumbnail.startsWith("http")
@@ -105,11 +113,12 @@ const Blogs = () => {
         </div>
       )}
 
-      <div className="text-center mt-12">
+     
+      {shouldShowButton && (
         <div className="text-center mt-12">
           <MainButton text="View All Blogs" onClick={goToAllBlogs} />
         </div>
-      </div>
+      )}
     </section>
   );
 };

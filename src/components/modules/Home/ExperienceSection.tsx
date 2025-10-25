@@ -18,6 +18,8 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
     Experience | null | undefined
   >(undefined);
 
+  const [showAll, setShowAll] = useState(false);
+
   useEffect(() => {
     const fetchExperiences = async () => {
       try {
@@ -40,7 +42,7 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
   }, []);
 
   const handleDelete = async (id?: number) => {
-    if (!id) return; // safety check
+    if (!id) return; 
     if (!window.confirm("Are you sure to delete this experience?")) return;
 
     try {
@@ -62,9 +64,15 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
       <p className="text-center py-10 text-gray-500">Loading experiences...</p>
     );
 
+
   const displayExperiences = isDashboard
     ? experiences
+    : showAll 
+    ? experiences
     : experiences.slice(0, 3);
+
+ 
+  const shouldShowToggleButton = !isDashboard && experiences.length > 3;
 
   return (
     <section className="p-6">
@@ -80,6 +88,7 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
         {displayExperiences.map((exp) => {
           const safeStartDate = exp.startDate
             ? new Date(exp.startDate).toLocaleDateString()
@@ -88,9 +97,12 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
             ? new Date(exp.endDate).toLocaleDateString()
             : "";
 
+       
+          const key = exp.id ?? exp.title;
+
           return (
             <div
-              key={exp.id ?? exp.title} // id missing হলে title দিয়ে key
+              key={key}
               className="bg-accent p-4 rounded-lg shadow-md flex flex-col gap-2"
             >
               <h3 className="font-semibold text-lg">{exp.title}</h3>
@@ -127,22 +139,30 @@ const ExperienceSection = ({ isDashboard = false }: ExperienceSectionProps) => {
         })}
       </div>
 
+     
+      {shouldShowToggleButton && (
+        <div className="text-center mt-8">
+          <MainButton
+            text={showAll ? "Hide Experience" : "View All Experience"}
+            onClick={() => setShowAll(!showAll)}
+          />
+        </div>
+      )}
+
       {modalExperience !== undefined && (
         <ExperienceModal
           experience={modalExperience}
           onClose={() => setModalExperience(undefined)}
           onSave={(savedExp) => {
             setExperiences((prev) => {
+            
               if (savedExp.id) {
-                const exists = prev.find((e) => e.id === savedExp.id);
-                if (exists) {
-                  return prev.map((e) => (e.id === savedExp.id ? savedExp : e));
-                } else {
-                  return [savedExp, ...prev];
-                }
+              
+                const filteredExp = prev.filter((e) => e.id !== savedExp.id);
+                return [savedExp, ...filteredExp];
               } else {
-                // temporary id
-                const tempId = Math.random();
+              
+                const tempId = Date.now() + Math.random();
                 return [{ ...savedExp, id: tempId }, ...prev];
               }
             });
