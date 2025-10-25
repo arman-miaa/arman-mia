@@ -41,7 +41,7 @@ const skillIcons: Record<string, { icon: React.ReactNode; color: string }> = {
   TypeScript: { icon: <SiTypescript />, color: "#3178C6" },
   shadcn: { icon: <SiShadcnui />, color: "#FFFFFF" },
   "Node.js": { icon: <SiNodedotjs />, color: "#68A063" },
-  "Express.js": { icon: <SiExpress />, color: "#000000" },
+  "Express.js": { icon: <SiExpress />, color: "#fff9ff" },
   MongoDB: { icon: <SiMongodb />, color: "#47A248" },
   PostgreSQL: { icon: <SiPostgresql />, color: "#336791" },
   Prisma: { icon: <SiPrisma />, color: "#0C344B" },
@@ -127,9 +127,7 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
   return (
     <section id="skills" className="container mx-auto p-6">
       <TitleSection heading="My Skills" subHeading="What I Do Best" />
-      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-        {isDashboard ? "Manage Skills" : "My Skills"}
-      </h2>
+  
 
       {isDashboard && (
         <div className="mb-6 text-right">
@@ -171,7 +169,7 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
                     >
                       {mapped.icon}
                     </span>
-                    <span className="text-white dark:text-white font-medium">
+                    <span className="text-gray-200  font-medium">
                       {skill.name}
                     </span>
 

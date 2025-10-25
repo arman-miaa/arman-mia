@@ -70,13 +70,13 @@ const SkillModal: React.FC<SkillModalProps> = ({ skill, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
       <div className="bg-accent p-6 rounded-lg w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-xl md:text-2xl  text-center text-secondary font-bold mb-4">
           {skill?.id ? "Edit Skill" : "Create Skill"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 dark:text-white mb-1">
+            <label className="block text-foreground  mb-1">
               Skill Name
             </label>
             <input
@@ -89,7 +89,7 @@ const SkillModal: React.FC<SkillModalProps> = ({ skill, onClose, onSave }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 dark:text-white mb-1">
+            <label className="block text-foreground  mb-1">
               Category
             </label>
             <select
@@ -108,14 +108,14 @@ const SkillModal: React.FC<SkillModalProps> = ({ skill, onClose, onSave }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400"
+              className="px-4 py-2 cursor-pointer rounded-md border border-gray-400 hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              className="px-4 py-2 cursor-pointer rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
               {loading
                 ? skill?.id
