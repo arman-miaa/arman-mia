@@ -6,10 +6,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="min-h-dvh flex flex-col md:flex-row">
-      {/* Sidebar on desktop, collapsible / top on mobile */}
+    <main className="min-h-dvh flex gap-4">
       <Sidebar />
-      <div className="flex-1 p-4">{children}</div>
+      {/* Main Content */}
+      <div className="flex-1  md:ml-64  p-4 mt-16 md:mt-0">{children}</div>
     </main>
   );
 }

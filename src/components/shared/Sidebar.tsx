@@ -11,13 +11,16 @@ import {
   Layers,
   Menu,
   X,
+  Globe,
 } from "lucide-react";
 import Image from "next/image";
 import LogoutButton from "../modules/auth/LogoutButton";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   const links = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -32,7 +35,8 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-3 bg-accent text-white">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed z-40 top-0 left-0 right-0 flex items-center justify-between p-3 bg-accent text-white">
         <span className="font-semibold text-lg">Admin Panel</span>
         <button
           onClick={() => setOpen(!open)}
@@ -44,8 +48,11 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`bg-accent  text-white md:h-screen md:w-64 flex flex-col justify-between transform transition-transform duration-300 fixed md:static top-0 left-0 z-50 w-64 h-full
-        ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        className={`bg-accent text-white flex flex-col justify-between
+          fixed top-0 left-0 z-50 w-64 h-screen
+          transform transition-transform duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        `}
       >
         {/* Profile Section */}
         <div>
@@ -68,17 +75,36 @@ export default function Sidebar() {
 
           {/* Nav Links */}
           <nav className="flex-1 p-3 space-y-1 mt-4 overflow-y-auto">
-            {links.map(({ href, label, icon: Icon }) => (
+            {links.map(({ href, label, icon: Icon }) => {
+              const isActive = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-secondary text-accent"
+                      : "hover:bg-secondary hover:text-accent text-white"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              );
+            })}
+
+            {/* 🌐 Home Page Button */}
+            <div className="mt-4 border-t border-gray-700 pt-3">
               <Link
-                key={href}
-                href={href}
+                href="/"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary hover:text-accent transition-colors"
               >
-                <Icon className="h-4 w-4" />
-                {label}
+                <Globe className="h-4 w-4" />
+                Go to Home Page
               </Link>
-            ))}
+            </div>
           </nav>
         </div>
 
