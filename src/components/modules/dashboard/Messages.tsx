@@ -1,5 +1,6 @@
 "use client";
 
+import { showConfirmToast } from "@/components/shared/ConfirmToast";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -21,9 +22,7 @@ const Messages = () => {
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API}/contact-messages`,
-          {
-            credentials: "include",
-          }
+          { credentials: "include" }
         );
         if (!res.ok) throw new Error("Failed to fetch messages");
 
@@ -41,29 +40,30 @@ const Messages = () => {
   }, []);
 
   // Delete message
-  const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm(
-      "Are you sure to delete this message?"
-    );
-    if (!confirmDelete) return;
+  const handleDelete = (id: number) => {
+    showConfirmToast({
+      message: "Are you sure you want to delete this message?",
+      confirmText: "Yes, Delete",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API}/contact-messages/${id}`,
+            {
+              method: "DELETE",
+              credentials: "include",
+            }
+          );
+          if (!res.ok) throw new Error("Failed to delete message");
 
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API}/contact-messages/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
+          setMessages((prev) => prev.filter((msg) => msg.id !== id));
+          toast.success("Message deleted successfully");
+        } catch (err) {
+          console.error(err);
+          toast.error("Failed to delete message");
         }
-      );
-
-      if (!res.ok) throw new Error("Failed to delete message");
-
-      setMessages((prev) => prev.filter((msg) => msg.id !== id));
-      toast.success("Message deleted successfully");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to delete message");
-    }
+      },
+    });
   };
 
   if (loading) {
@@ -82,33 +82,40 @@ const Messages = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-        Messages
-      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 flex flex-col justify-between"
+            className="bg-accent backdrop-blur-md rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col justify-between border border-gray-200 dark:border-gray-700"
           >
-            <div className="mb-4">
-              <p className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
-                {msg.name}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {msg.email}
-              </p>
-              <p className="mt-2 text-gray-700 dark:text-gray-200">
-                {msg.message}
-              </p>
+            {/* Header with Avatar and Name */}
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold mr-3">
+                {msg.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="font-semibold text-white dark:text-gray-100 text-lg">
+                  {msg.name}
+                </p>
+                <p className="text-sm text-foreground">
+                  {msg.email}
+                </p>
+              </div>
             </div>
-            <div className="flex justify-between items-center mt-4">
-              <p className="text-xs text-gray-400">
+
+            {/* Message */}
+            <p className="text-white mb-4 line-clamp-3">
+              {msg.message}
+            </p>
+
+            {/* Footer with timestamp and delete */}
+            <div className="flex justify-between items-center mt-auto">
+              <span className="text-sm text-white bg-primary px-2 py-1 rounded-full">
                 {new Date(msg.createdAt).toLocaleString()}
-              </p>
+              </span>
               <button
                 onClick={() => handleDelete(msg.id)}
-                className="text-red-600 hover:text-red-800 font-semibold text-sm"
+                className="flex items-center gap-1 cursor-pointer text-red-600 hover:text-red-800 font-semibold text-sm transition-colors duration-200"
               >
                 Delete
               </button>

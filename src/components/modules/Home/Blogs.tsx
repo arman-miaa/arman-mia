@@ -69,7 +69,7 @@ const Blogs = () => {
   }
 
   return (
-    <section id="blogs" className="container mx-auto py-16 px-4">
+    <section id="blogs" className="container mx-auto py-16  px-4">
       <TitleSection heading="Latest Blogs" subHeading="Our Blogs" />
 
       {displayBlogs.length === 0 ? (

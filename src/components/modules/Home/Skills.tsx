@@ -25,6 +25,8 @@ import { VscVscode } from "react-icons/vsc";
 
 import MainButton from "@/components/ui/MainButton";
 import SkillModal from "../popups/EditSkillModal"; 
+import TitleSection from "@/components/shared/TitleSection";
+import { showConfirmToast } from "@/components/shared/ConfirmToast";
 
 interface Skill {
   id?: number;
@@ -83,8 +85,12 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
 
   const handleDelete = async (id: number) => {
     if (!isDashboard) return;
-    if (!window.confirm("Are you sure to delete this skill?")) return;
-
+   
+    showConfirmToast({
+   message: "Are you sure you want to delete this skills?",
+    confirmText: "Yes, Delete",
+    cancelText: "Cancel",
+      onConfirm: async () => { 
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API}/skill/${id}`,
@@ -97,7 +103,13 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
       console.error(err);
       toast.error("Failed to delete skill");
     }
+      }
+})
+
   };
+
+
+  
 
   const groupedSkills = useMemo(() => {
     return skills.reduce<Record<string, Skill[]>>((acc, skill) => {
@@ -113,7 +125,8 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
     return <p className="text-center py-10 text-gray-500">Loading skills...</p>;
 
   return (
-    <section className="p-6">
+    <section className="container mx-auto p-6">
+      <TitleSection heading="My Skills" subHeading="What I Do Best" />
       <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
         {isDashboard ? "Manage Skills" : "My Skills"}
       </h2>
@@ -144,13 +157,13 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
                 };
                 return (
                   <li
-                    // ✅ Key লজিক: নিশ্চিত করে যে ক্রিয়েট বা এডিটের সময় রিরেন্ডার হবে
+                
                     key={
                       skill.id
                         ? `skill-${skill.id}`
                         : `new-${skill.name}-${Date.now()}`
                     }
-                    className="bg-white dark:bg-gray-800 p-3 rounded-lg flex flex-col items-center w-28 text-center shadow"
+                    className="bg-primary  p-3 rounded-lg flex flex-col items-center w-28 text-center shadow"
                   >
                     <span
                       className="text-3xl mb-1"
@@ -158,7 +171,7 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
                     >
                       {mapped.icon}
                     </span>
-                    <span className="text-gray-900 dark:text-white font-medium">
+                    <span className="text-white dark:text-white font-medium">
                       {skill.name}
                     </span>
 
@@ -166,13 +179,13 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
                       <div className="flex gap-2 mt-2">
                         <button
                           onClick={() => setModalSkill(skill)}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
+                          className="text-blue-600 cursor-pointer hover:text-blue-800 text-sm font-semibold"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(skill.id!)}
-                          className="text-red-600 hover:text-red-800 text-sm font-semibold"
+                          className="text-red-600 cursor-pointer hover:text-red-800 text-sm font-semibold"
                         >
                           Delete
                         </button>
@@ -190,13 +203,10 @@ const SkillsDashboard = ({ isDashboard = false }: SkillsDashboardProps) => {
         <SkillModal
           skill={modalSkill}
           onClose={() => setModalSkill(undefined)}
-        
           onSave={(savedSkill) => {
             setSkills((prev) => {
-           
               const filteredSkills = prev.filter((s) => s.id !== savedSkill.id);
 
-            
               return [savedSkill, ...filteredSkills];
             });
           }}

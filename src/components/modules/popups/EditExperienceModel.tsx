@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import { Experience } from "@/types";
 
 interface ExperienceModalProps {
-  experience: Experience | null; // null হলে Create, Object হলে Edit
+  experience: Experience | null; 
   onClose: () => void;
   onSave: (savedExperience: Experience) => void;
 }
@@ -18,7 +18,7 @@ const ExperienceModal = ({
   onClose,
   onSave,
 }: ExperienceModalProps) => {
-  // ✅ isUpdating ভ্যারিয়েবলটি ফাংশন স্কোপে ডিফাইন করা হলো
+
   const isUpdating = !!experience?.id;
 
   const [title, setTitle] = useState(experience?.title || "");
@@ -38,7 +38,7 @@ const ExperienceModal = ({
   const [location, setLocation] = useState(experience?.location || "");
   const [loading, setLoading] = useState(false);
 
-  // Modal context পরিবর্তন হলে স্টেট রিসেট করা
+
   useEffect(() => {
     setTitle(experience?.title || "");
     setCompany(experience?.company || "");
@@ -69,7 +69,7 @@ const ExperienceModal = ({
         : null,
       isCurrent,
       description,
-      // কমা সেপারেটেড স্ট্রিংকে অ্যারেতে পরিবর্তন করা
+    
       technologies: technologies
         .split(",")
         .map((t) => t.trim())
@@ -95,7 +95,7 @@ const ExperienceModal = ({
         );
 
       const data = await res.json();
-      // API রেসপন্স থেকে সঠিক অবজেক্ট বের করা
+   
       const savedExp: Experience = data.data || data.experience || data;
 
       onSave(savedExp);
@@ -117,11 +117,13 @@ const ExperienceModal = ({
   return (
     <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
       <div className="bg-accent p-6 rounded-lg w-full max-w-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4 text-gray-900">{modalTitle}</h2>
+        <h2 className="text-xl font-bold mb-4 text-center text-secondary">
+          {modalTitle}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 mb-1">Title</label>
+            <label className="block text-foreground mb-1">Title</label>
             <input
               type="text"
               value={title}
@@ -132,7 +134,7 @@ const ExperienceModal = ({
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Company</label>
+            <label className="block text-foreground mb-1">Company</label>
             <input
               type="text"
               value={company}
@@ -143,7 +145,7 @@ const ExperienceModal = ({
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Position</label>
+            <label className="block text-foreground mb-1">Position</label>
             <input
               type="text"
               value={position}
@@ -154,7 +156,7 @@ const ExperienceModal = ({
 
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="block text-gray-700 mb-1">Start Date</label>
+              <label className="block text-foreground mb-1">Start Date</label>
               <input
                 type="date"
                 value={startDate}
@@ -165,7 +167,7 @@ const ExperienceModal = ({
             </div>
 
             <div className="flex-1">
-              <label className="block text-gray-700 mb-1">End Date</label>
+              <label className="block text-foreground mb-1">End Date</label>
               <input
                 type="date"
                 value={endDate}
@@ -183,11 +185,11 @@ const ExperienceModal = ({
               onChange={(e) => setIsCurrent(e.target.checked)}
               className="rounded border-gray-300"
             />
-            <span className="text-gray-700">Current Job</span>
+            <span className="text-foreground">Current Job</span>
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Description</label>
+            <label className="block text-foreground mb-1">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -196,7 +198,7 @@ const ExperienceModal = ({
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">
+            <label className="block text-foreground mb-1">
               Technologies (comma separated)
             </label>
             <input
@@ -208,7 +210,7 @@ const ExperienceModal = ({
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-1">Location</label>
+            <label className="block text-foreground mb-1">Location</label>
             <input
               type="text"
               value={location}
@@ -221,14 +223,14 @@ const ExperienceModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400"
+              className="px-4 py-2 cursor-pointer rounded-md border border-gray-400 hover:bg-primary"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              className="px-4 py-2 cursor-pointer rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
               {loading
                 ? isUpdating
