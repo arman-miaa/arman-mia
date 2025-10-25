@@ -85,18 +85,18 @@ const BlogDetail = () => {
           height={340}
           width={800}
           className="w-full h-96 object-cover"
-          unoptimized 
-          onError={() => setImageSrc(notFoundImg.src)} 
+          unoptimized
+          onError={() => setImageSrc(notFoundImg.src)}
         />
         <div className="p-8">
-          <h1 className="text-4xl font-bold text-mainText mb-4">
+          <h1 className="text-xl md:text-4xl font-bold text-secondary mb-4">
             {blog.title}
           </h1>
-          <p className="text-gray-500 text-sm mb-6">
-            {new Date(blog.createdAt).toLocaleDateString()}
-          </p>
-          <p className="text-gray-400 text-lg leading-relaxed">
+          <p className="text-gray-100 text-lg leading-relaxed">
             {blog.content}
+          </p>
+          <p className="text-gray-400  mt-6">
+            {new Date(blog.createdAt).toLocaleDateString()}
           </p>
         </div>
       </div>

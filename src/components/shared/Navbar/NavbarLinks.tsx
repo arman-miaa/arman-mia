@@ -1,5 +1,6 @@
 "use client";
 
+import { UserCog } from "lucide-react";
 import Link from "next/link";
 import { FaFileContract, FaHome, FaInfoCircle } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
@@ -33,7 +34,7 @@ export const NavbarLinks = ({
     {
       href: "#experiences",
       label: "Experiences",
-      icon: <SiHyperskill className="lg:hidden" />,
+      icon: <UserCog className="lg:hidden" />,
     },
     {
       href: "#projects",

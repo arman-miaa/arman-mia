@@ -86,10 +86,10 @@ export const DashboardHome = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-secondary dark:text-gray-400">
+                  <span className="md:text-2xl font-medium text- ">
                     {card.title}
                   </span>
-                  <span className="text-3xl font-bold text- dark:text-white">
+                  <span className="text-3xl font-bold text-secondary ">
                     {card.value}
                   </span>
                 </div>

@@ -100,11 +100,11 @@ const Blogs = () => {
               />
 
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-mainText">
+                <h3 className="text-xl md:text-2xl font-bold mb-2 text-secondary">
                   {blog.title}
                 </h3>
-                <p className="text-gray-400 mb-4">{blog.content}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-gray-100 mb-4">{blog.content}</p>
+                <p className="text-sm text-gray-300">
                   {new Date(blog.createdAt).toLocaleDateString()}
                 </p>
               </div>

@@ -111,13 +111,13 @@ export const BlogCard = ({ isDashboard = false }: BlogCardProps) => {
                 />
 
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-2 text-white">
+                  <h3 className="text-lg md:text-2xl font-semibold mb-2 text-secondary">
                     {blog.title}
                   </h3>
-                  <p className="text-foreground mb-3 text-sm line-clamp-2">
+                  <p className="text-gray-100 mb-3  line-clamp-2">
                     {blog.content}
                   </p>
-                  <p className="text-xs text-gray-400 mb-2">
+                  <p className="text-xs text-gray-300 mb-2">
                     {new Date(blog.createdAt).toLocaleDateString()}
                   </p>
 

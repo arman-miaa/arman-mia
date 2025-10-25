@@ -34,7 +34,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Header */}
+
       {/* Mobile Header */}
       <div className="md:hidden fixed z-40 top-0 left-0 right-0 flex items-center justify-between p-3 bg-accent text-white">
         <span className="font-semibold text-lg">Admin Panel</span>
@@ -82,13 +82,13 @@ export default function Sidebar() {
                   key={href}
                   href={href}
                   onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2  font-medium transition-colors ${
                     isActive
                       ? "bg-secondary text-accent"
                       : "hover:bg-secondary hover:text-accent text-white"
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-6 w-6" />
                   {label}
                 </Link>
               );
@@ -99,9 +99,9 @@ export default function Sidebar() {
               <Link
                 href="/"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary hover:text-accent transition-colors"
+                className="flex items-center gap-3 rounded-lg px-3 py-2  font-medium hover:bg-secondary hover:text-accent transition-colors"
               >
-                <Globe className="h-4 w-4" />
+                <Globe className="h-6 w-6" />
                 Go to Home Page
               </Link>
             </div>
